@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from model import log_reg, encoder, mappings
 
 st.set_page_config(page_title='mushroom prediction')
 
@@ -49,10 +50,15 @@ Displays the various preprocessing graphs
 
 Plots the classification given the models we choose.
 
-
 """
     )
 
+# inverse_mapping = {}
+# for col_name, col in mappings.items():
+#     inverse_mapping[col_name] = {}
+#     for i, v in col.items():
+#         inverse_mapping[col_name][v] = i
+    
 def model_demo():
     import streamlit as st
     left_column, right_column = st.columns(2)
@@ -62,9 +68,12 @@ def model_demo():
         choices[i] = left_column.selectbox(i, v)
 
     with right_column:
-        predicted = 'Poisonous'
+        choices_arr = [[v for i, v in choices.items()]]
+        choices_arr = encoder.transform(choices_arr)
+        predicted = "edible" if log_reg.predict(choices_arr)[0] >= 0.5 else "poisonous"
         st.write('Predicted value: ', predicted)
         st.write('You selected: ', choices)
+        st.write('Encoded input: ', choices_arr[0])
 
 def preprocessing():
     pass
