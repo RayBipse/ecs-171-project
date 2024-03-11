@@ -218,3 +218,9 @@ print("Classification Report:\n", class_report)
 
 conf_matrix = confusion_matrix(y_test, y_pred)
 print("Confusion Matrix:\n", conf_matrix)
+
+from joblib import dump
+dump(lg, './frontend/lg.joblib')
+dump(mlp, './frontend/mlp.joblib')
+dump(nb, './frontend/nb.joblib')
+dump(encoder, './frontend/encoder.joblib')

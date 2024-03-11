@@ -1,6 +1,5 @@
 import streamlit as st
-import pandas as pd
-from model import lg, mlp, nb, encoder
+from joblib import load
 
 st.set_page_config(page_title='mushroom prediction')
 
@@ -43,6 +42,8 @@ You can choose the model on the left. We have
 
 """)
     
+encoder = load("./frontend/encoder.joblib")
+
 def model_demo():
     import streamlit as st
     left_column, right_column = st.columns(2)
@@ -52,7 +53,7 @@ def model_demo():
         choices[i] = left_column.selectbox(i, v)
 
     with right_column:
-        choices_arr = encoder.transform(choices.values())
+        choices_arr = encoder.transform([list(choices.values())])
         predicted = "edible" if models[model_name].predict(choices_arr)[0] >= 0.5 else "poisonous"
         st.write('Predicted value: ', predicted)
         st.write('You selected: ', choices)
@@ -69,9 +70,9 @@ mlp = None
 nb = None
 
 models = {
-    "logistic": lg,
-    "mlp": mlp,
-    "naive bayes": nb,
+    "logistic": load("./frontend/lg.joblib"),
+    "mlp": load("./frontend/mlp.joblib"),
+    "naive bayes": load("./frontend/nb.joblib"),
 }
 
 demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
