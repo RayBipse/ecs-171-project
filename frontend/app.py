@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from model import log_reg, encoder, mappings
+from model import lg, mlp, nb, encoder
 
 st.set_page_config(page_title='mushroom prediction')
 
@@ -35,29 +35,13 @@ def intro():
 """
 # Welcome to ECS 171 Project: Mushroom Prediction
 
-We have three pages
+You can choose the model on the left. We have
 
-## Model demo
+1. logistic
+2. multi-layer perception classifier
+3. bayesian classifier
 
-Our model will give a classification (poisonous vs edible) given a 
-custom user input data.
-
-## Preprocessing graphs
-
-Displays the various preprocessing graphs
-
-## Plot graphs
-
-Plots the classification given the models we choose.
-
-"""
-    )
-
-# inverse_mapping = {}
-# for col_name, col in mappings.items():
-#     inverse_mapping[col_name] = {}
-#     for i, v in col.items():
-#         inverse_mapping[col_name][v] = i
+""")
     
 def model_demo():
     import streamlit as st
@@ -68,25 +52,28 @@ def model_demo():
         choices[i] = left_column.selectbox(i, v)
 
     with right_column:
-        choices_arr = [[v for i, v in choices.items()]]
-        choices_arr = encoder.transform(choices_arr)
-        predicted = "edible" if log_reg.predict(choices_arr)[0] >= 0.5 else "poisonous"
+        choices_arr = encoder.transform(choices.values())
+        predicted = "edible" if models[model_name].predict(choices_arr)[0] >= 0.5 else "poisonous"
         st.write('Predicted value: ', predicted)
         st.write('You selected: ', choices)
         st.write('Encoded input: ', choices_arr[0])
 
-def preprocessing():
-    pass
-
-def plot_demo():
-    pass
-
 page_names_to_funcs = {
     "Intro": intro,
     "Model demo": model_demo,
-    "Preprocessing graphs": preprocessing,
-    "Plot graphs": plot_demo
+}
+
+
+lr = None
+mlp = None
+nb = None
+
+models = {
+    "logistic": lg,
+    "mlp": mlp,
+    "naive bayes": nb,
 }
 
 demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
+model_name = st.sidebar.selectbox("Choose a model", models.keys())
 page_names_to_funcs[demo_name]()
