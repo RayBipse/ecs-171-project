@@ -78,3 +78,23 @@ models = {
 demo_name = st.sidebar.selectbox("Choose a demo", page_names_to_funcs.keys())
 model_name = st.sidebar.selectbox("Choose a model", models.keys())
 page_names_to_funcs[demo_name]()
+
+# style
+#    .sidebar .sidebar-content {
+#         background: url("https://images.app.goo.gl/LFCobouKtT7oZ7Qv7")
+#     }
+st.markdown(
+    """
+    <style>
+    .main {
+        background: url("./app/static/mushroom.webp");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
